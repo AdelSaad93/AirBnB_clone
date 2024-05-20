@@ -1,8 +1,6 @@
-#!/usr/bin/python3
-
-
 import unittest
 from models.base_model import BaseModel
+
 
 class TestBaseModelDict(unittest.TestCase):
     def test_base_model_from_dict(self):
@@ -19,6 +17,7 @@ class TestBaseModelDict(unittest.TestCase):
         self.assertEqual(my_model.name, my_new_model.name)
         self.assertEqual(my_model.my_number, my_new_model.my_number)
         self.assertEqual(str(my_model), str(my_new_model))
+
 
 if __name__ == '__main__':
     unittest.main()

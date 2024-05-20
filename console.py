@@ -9,6 +9,7 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 
+
 class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) '
     class_dict = {
@@ -22,7 +23,7 @@ class HBNBCommand(cmd.Cmd):
     }
 
     def do_create(self, args):
-        """Creates a new instance of BaseModel or a specified class, saves it and prints the id."""
+        """Creates a new instance of BaseModel or a specified class."""
         if not args:
             print("** class name missing **")
             return
@@ -34,7 +35,7 @@ class HBNBCommand(cmd.Cmd):
         new_instance = self.class_dict[class_name]()
         new_instance.save()
         print(new_instance.id)
-    
+
     def do_show(self, args):
         """Shows an instance of a specified class based on id."""
         args_list = args.split()
@@ -52,7 +53,7 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
             return
         print(storage.all()[key])
-    
+
     def do_destroy(self, args):
         """Destroys an instance of a specified class based on id."""
         args_list = args.split()
@@ -71,9 +72,9 @@ class HBNBCommand(cmd.Cmd):
             return
         del storage.all()[key]
         storage.save()
-    
+
     def do_all(self, args):
-        """Shows all instances of a specified class, or all instances if no class is specified."""
+        """Shows all instances of a specified class, or all instances."""
         if args and args not in self.class_dict:
             print("** class doesn't exist **")
             return
@@ -87,7 +88,7 @@ class HBNBCommand(cmd.Cmd):
                 if key.split('.')[0] == args:
                     instance_list.append(str(instance))
         print(instance_list)
-    
+
     def do_update(self, args):
         """Updates an instance of a specified class based on id."""
         args_list = args.split()
@@ -113,6 +114,7 @@ class HBNBCommand(cmd.Cmd):
         obj = storage.all()[key]
         setattr(obj, args_list[2], args_list[3])
         obj.save()
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
