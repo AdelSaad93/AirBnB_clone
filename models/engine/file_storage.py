@@ -4,7 +4,9 @@ import os
 from models.base_model import BaseModel
 from models.engine.file_storage import FileStorage
 
+
 class TestFileStorage(unittest.TestCase):
+
 
     def setUp(self):
         """Set up test environment"""
@@ -63,6 +65,7 @@ class TestFileStorage(unittest.TestCase):
         """Test that __objects is a private attribute"""
         with self.assertRaises(AttributeError):
             getattr(self.storage, "__objects")
+
 
 if __name__ == "__main__":
     unittest.main()
