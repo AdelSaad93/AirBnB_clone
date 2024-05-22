@@ -7,5 +7,6 @@ class TestUser(unittest.TestCase):
         obj = User()
         self.assertIsInstance(obj, User)
 
+
 if __name__ == "__main__":
     unittest.main()

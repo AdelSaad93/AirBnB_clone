@@ -1,30 +1,68 @@
+import unittest
 import json
+import os
 from models.base_model import BaseModel
+from models.engine.file_storage import FileStorage
 
+class TestFileStorage(unittest.TestCase):
 
-class FileStorage:
-    __file_path = "file.json"
-    __objects = {}
+    def setUp(self):
+        """Set up test environment"""
+        self.storage = FileStorage()
+        self.obj = BaseModel()
+        self.obj_key = "BaseModel." + self.obj.id
 
-    def all(self):
-        return FileStorage.__objects
-
-    def new(self, obj):
-        key = obj.__class__.__name__ + "." + obj.id
-        FileStorage.__objects[key] = obj
-
-    def save(self):
-        obj_dict = {key: obj.to_dict() for key, obj in FileStorage.__objects.items()}
-        with open(FileStorage.__file_path, 'w') as f:
-            json.dump(obj_dict, f)
-
-    def reload(self):
+    def tearDown(self):
+        """Remove the JSON file created during tests"""
         try:
-            with open(FileStorage.__file_path, 'r') as f:
-                obj_dict = json.load(f)
-                for key, value in obj_dict.items():
-                    class_name = value['__class__']
-                    cls = eval(class_name)  # Dynamic class reference
-                    self.new(cls(**value))
-        except FileNotFoundError:
+            os.remove("file.json")
+        except Exception:
             pass
+
+    def test_all(self):
+        """Test that all() returns the correct dictionary of objects"""
+        self.storage.new(self.obj)
+        self.assertIn(self.obj_key, self.storage.all())
+        self.assertEqual(self.storage.all()[self.obj_key], self.obj)
+
+    def test_new(self):
+        """Test that new() adds an object to the storage"""
+        self.storage.new(self.obj)
+        self.assertIn(self.obj_key, self.storage.all())
+        self.assertEqual(self.storage.all()[self.obj_key], self.obj)
+
+    def test_save(self):
+        """Test that save() correctly serializes objects to file"""
+        self.storage.new(self.obj)
+        self.storage.save()
+        with open("file.json", "r") as f:
+            data = json.load(f)
+            self.assertIn(self.obj_key, data)
+            self.assertEqual(data[self.obj_key]["id"], self.obj.id)
+
+    def test_reload(self):
+        """Test that reload() correctly deserializes objects from file"""
+        self.storage.new(self.obj)
+        self.storage.save()
+        self.storage._FileStorage__objects = {}
+        self.storage.reload()
+        self.assertIn(self.obj_key, self.storage.all())
+        self.assertEqual(self.storage.all()[self.obj_key].id, self.obj.id)
+
+    def test_reload_no_file(self):
+        """Test that reload() does nothing if the file doesn't exist"""
+        self.storage.reload()
+        self.assertEqual(self.storage.all(), {})
+
+    def test_file_path_is_private(self):
+        """Test that __file_path is a private attribute"""
+        with self.assertRaises(AttributeError):
+            getattr(self.storage, "__file_path")
+
+    def test_objects_is_private(self):
+        """Test that __objects is a private attribute"""
+        with self.assertRaises(AttributeError):
+            getattr(self.storage, "__objects")
+
+if __name__ == "__main__":
+    unittest.main()

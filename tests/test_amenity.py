@@ -7,5 +7,6 @@ class TestAmenity(unittest.TestCase):
         obj = Amenity()
         self.assertIsInstance(obj, Amenity)
 
+
 if __name__ == "__main__":
     unittest.main()

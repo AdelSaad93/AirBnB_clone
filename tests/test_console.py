@@ -32,5 +32,6 @@ class TestConsole(unittest.TestCase):
         HBNBCommand().onecmd("    ")
         self.assertEqual(self.mystdout.getvalue(), "")
 
+
 if __name__ == '__main__':
     unittest.main()

@@ -7,5 +7,6 @@ class TestCity(unittest.TestCase):
         obj = City()
         self.assertIsInstance(obj, City)
 
+
 if __name__ == "__main__":
     unittest.main()
